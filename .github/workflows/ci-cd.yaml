@@ -26,25 +26,25 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/re-shopping-cart-web-app:latest
+          tags: ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
 
       - name: SSH into EC2 and deploy container
         uses: appleboy/ssh-action@v1.0.0
-        with:
+        with: 
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo ">>> Stopping and removing old container if exists"
-            docker rm -f re-shopping-cart-web-app || true
-            docker rmi ${{ secrets.DOCKER_USER }}/re-shopping-cart-web-app:latest || true
+            docker rm -f awsdoanhnghiep-v1 || true
+            docker rmi ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest || true
 
             echo ">>> Pulling latest image from Docker Hub"
-            docker pull ${{ secrets.DOCKER_USER }}/re-shopping-cart-web-app:latest
+            docker pull ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
 
             echo ">>> Running container"
             docker run -d \
-              --name re-shopping-cart-web-app \
+              --name awsdoanhnghiep-v1 \
               --restart unless-stopped \
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
@@ -53,7 +53,7 @@ jobs:
               -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
               -e JAVA_OPTS="-Xms512m -Xmx512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0" \
               -e TZ=UTC \
-              ${{ secrets.DOCKER_USER }}/re-shopping-cart-web-app:latest
+              ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
 
             echo ">>> Status & logs"
-            docker ps -a --filter "name=re-shopping-cart-web-app"
+            docker ps -a --filter "name=awsdoanhnghiep-v1"
