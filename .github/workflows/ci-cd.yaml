@@ -26,7 +26,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/awsdoanhnghiep-v1:latest
 
       - name: SSH into EC2 and deploy container
         uses: appleboy/ssh-action@v1.0.0
@@ -37,10 +37,10 @@ jobs:
           script: |
             echo ">>> Stopping and removing old container if exists"
             docker rm -f awsdoanhnghiep-v1 || true
-            docker rmi ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest || true
+            docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/awsdoanhnghiep-v1:latest || true
 
             echo ">>> Pulling latest image from Docker Hub"
-            docker pull ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/awsdoanhnghiep-v1:latest
 
             echo ">>> Running container"
             docker run -d \
@@ -53,7 +53,7 @@ jobs:
               -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
               -e JAVA_OPTS="-Xms512m -Xmx512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0" \
               -e TZ=UTC \
-              ${{ secrets.DOCKER_USER }}/awsdoanhnghiep-v1:latest
+              ${{ secrets.DOCKER_HUB_USERNAME }}/awsdoanhnghiep-v1:latest
 
             echo ">>> Status & logs"
             docker ps -a --filter "name=awsdoanhnghiep-v1"
